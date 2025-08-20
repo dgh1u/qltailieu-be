@@ -8,11 +8,11 @@
 		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.nckh</groupId>
-	<artifactId>nckh_motel-room_be</artifactId>
+	<groupId>com.kltn</groupId>
+	<artifactId>qltailieu-be</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>nckh_motel-room_be</name>
-	<description>Motel Management BE</description>
+	<name>qltailieu-be</name>
+	<description>Document Management BE</description>
 	<url/>
 	<licenses>
 		<license/>
