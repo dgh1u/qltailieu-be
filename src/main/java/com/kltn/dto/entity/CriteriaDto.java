@@ -1,31 +1,40 @@
 package com.kltn.dto.entity;
 
-import com.kltn.model.Criteria;
 import lombok.Data;
+import java.math.BigDecimal;
 
-import java.io.Serializable;
-import java.time.Instant;
-
-/**
- * DTO for {@link Criteria}
- */
 @Data
-public class CriteriaDto implements Serializable {
+public class CriteriaDto {
     private Long id;
+    private Double acreage;
+    private String address;
+    private Boolean airConditioner;
+    private Boolean interior;
+    private BigDecimal electricPrice;
+    private Boolean heater;
+    private Boolean internet;
+    private String motel;
+    private Boolean parking;
+    private BigDecimal price;
+    private Boolean owner;
+    private Boolean toilet;
+    private Boolean time;
+    private BigDecimal waterPrice;
 
-    private boolean motel;
+    private Boolean gender;
+    private DistrictDto district;  // Dùng district thay vì idDistrict
+    private Boolean kitchen;
+    private Boolean security;
 
-    private double priceStart;
+    private String openHours;
+    private String secondMotel;
+    private Boolean delivery;
+    private Boolean dineIn;
+    private Boolean takeAway;
+    private Boolean bigSpace;
+    private String linkShopeeFood;
+    private String major;
+    private String referenceUrl;
 
-    private double priceEnd;
-
-    private double acreageStart;
-
-    private double acreageEnd;
-
-    private DistrictDto districtDTO;
-
-    private boolean stop;
-
-    private Instant createAt;
 }
+

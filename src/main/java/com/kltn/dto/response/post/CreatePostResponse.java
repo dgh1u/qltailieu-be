@@ -12,6 +12,6 @@ public class CreatePostResponse {
     private LocalDateTime createAt;
     private LocalDateTime lastUpdate;
     private String user;
-    private Long accomodationId;
+    private Long criteriaId;
     private String type;
 }

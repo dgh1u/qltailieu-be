@@ -12,7 +12,7 @@ public interface ActionMapper {
     // và bạn muốn hiển thị email vào ActionDto.username
     @Mapping(target = "email", source = "user.email")
     @Mapping(target = "fullName", source = "user.fullName")
-    @Mapping(target="motel",source = "post.accomodation.motel")
+    @Mapping(target="motel",source = "post.criteria.motel")
     // Tương tự, Post có field title -> map sang postTitle
     @Mapping(target = "postTitle", source = "post.title")
 

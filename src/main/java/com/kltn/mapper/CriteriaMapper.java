@@ -1,26 +1,26 @@
 package com.kltn.mapper;
 
-import com.kltn.dto.entity.AccomodationDto;
-import com.kltn.dto.request.accommodation.CreateAccommodationRequest;
-import com.kltn.model.Accomodation;
+import com.kltn.dto.entity.CriteriaDto;
+import com.kltn.dto.request.criteria.CreateCriteriaRequest;
+import com.kltn.model.Criteria;
 import com.kltn.model.District;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring", uses = {DistrictMapper.class})
-public interface AccommodationMapper {
-    AccomodationDto toAccomodationDto(Accomodation accomodation);
+public interface CriteriaMapper {
+    CriteriaDto toCriteriaDto(Criteria criteria);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "district", source = "idDistrict", qualifiedByName = "mapDistrict")
     @Mapping(target = "kitchen", source = "kitchen")
     @Mapping(target = "security", source = "security")
-    Accomodation toAccomodation(CreateAccommodationRequest accomodation);
+    Criteria toCriteria(CreateCriteriaRequest criteria);
 
     @Mapping(target = "kitchen", source = "kitchen")
     @Mapping(target = "security", source = "security")
-    Accomodation toAccomodation(AccomodationDto accomodation);
+    Criteria toCriteria(CriteriaDto criteria);
 
     @Named("mapDistrict")
     default District mapDistrict(Long idDistrict) {

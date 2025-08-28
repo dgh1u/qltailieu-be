@@ -9,7 +9,7 @@ import com.kltn.dto.request.post.CreatePostRequest;
 import com.kltn.dto.request.post.UpdatePostRequest;
 import com.kltn.dto.response.post.*;
 import com.kltn.exception.DataNotFoundException;
-import com.kltn.mapper.AccommodationMapper;
+import com.kltn.mapper.CriteriaMapper;
 import com.kltn.mapper.CommentMapper;
 import com.kltn.mapper.PostMapper;
 import com.kltn.mapper.UserMapper;
@@ -46,7 +46,7 @@ public class PostServiceImp implements PostService {
 
     private final DistrictRepository districtRepository;
 
-    private final AccomodationRepository accomodationRepository;
+    private final CriteriaRepository criteriaRepository;
 
     private final CommentRepository commentRepository;
 
@@ -59,7 +59,7 @@ public class PostServiceImp implements PostService {
  ;   //Some Mapper in this
     private final PostMapper postMapper;
 
-    private final AccommodationMapper accommodationMapper;
+    private final CriteriaMapper criteriaMapper;
 
     private final UserMapper userMapper;
 
@@ -86,7 +86,7 @@ public class PostServiceImp implements PostService {
         if(post.isPresent()) {
             PostDto postDto = postMapper.toPostDto(post.get());
             //Lay cho o ra
-            AccomodationDto accomodationDto = accommodationMapper.toAccomodationDto(post.get().getAccomodation());
+            CriteriaDto criteriaDto = criteriaMapper.toCriteriaDto(post.get().getCriteria());
             // Lấy các bình luận của bài đăng
             List<CommentDto> commentDtos = new ArrayList<>();
             List<Comment> comments = commentRepository.findCommentsByPostId(id);
@@ -100,7 +100,7 @@ public class PostServiceImp implements PostService {
             postDto.setDocuments(documents);
 
             // Thiết lập dữ liệu cho DTO
-            postDto.setAccomodationDTO(accomodationDto);
+            postDto.setCriteriaDTO(criteriaDto);
             postDto.setImageStrings(images);
             postDto.setCommentDTOS(commentDtos);
             postDto.setUserDTO(userMapper.toUserDto(post.get().getUser()));
@@ -139,12 +139,12 @@ public class PostServiceImp implements PostService {
             post.setApproved(true);
             post.setNotApproved(true);
 
-            // Xử lý đối tượng Accomodation liên quan đến bài đăng
-            Accomodation accomodation = accommodationMapper.toAccomodation(createPostRequest.getAccomodation());
-            accomodation.setId(null);
-            accomodation.setPost(post);
-            Accomodation accomodationSaved = accomodationRepository.save(accomodation);
-            post.setAccomodation(accomodationSaved);
+            // Xử lý đối tượng Criteria liên quan đến bài đăng
+            Criteria criteria = criteriaMapper.toCriteria(createPostRequest.getCriteria());
+            criteria.setId(null);
+            criteria.setPost(post);
+            Criteria criteriaSaved = criteriaRepository.save(criteria);
+            post.setCriteria(criteriaSaved);
 
             // Lưu bài đăng vào database
             Post postSaved = postRepository.save(post);
@@ -173,7 +173,7 @@ public class PostServiceImp implements PostService {
                     .orElseThrow(() -> new DataNotFoundException("Không tìm thấy bài đăng với ID: " + id));
 
             // Tìm hoặc tạo District
-            District district = districtRepository.findDistrictById(updatePostRequest.getAccomodation().getDistrict().getId())
+            District district = districtRepository.findDistrictById(updatePostRequest.getCriteria().getDistrict().getId())
                     .orElseGet(() -> {
                         District newDistrict = new District();
                         newDistrict.setName("Default District");
@@ -181,24 +181,24 @@ public class PostServiceImp implements PostService {
                         return districtRepository.save(newDistrict);
                     });
 
-            // Cập nhật thông tin Accomodation
-            Accomodation accomodation = accommodationMapper.toAccomodation(updatePostRequest.getAccomodation());
-            accomodation.setDistrict(district);
+            // Cập nhật thông tin Criteria
+            Criteria criteria = criteriaMapper.toCriteria(updatePostRequest.getCriteria());
+            criteria.setDistrict(district);
 
 
             // Cập nhật thông tin Post
             post.setTitle(updatePostRequest.getTitle());
             post.setContent(updatePostRequest.getContent());
             post.setLastUpdate(LocalDateTime.now());
-            post.setAccomodation(accomodation);
+            post.setCriteria(criteria);
             post.setApproved(true);
             post.setNotApproved(true);
 
-            // Gán Accomodation vào Post (quan hệ 1-1)
-            accomodation.setPost(post);
+            // Gán Criteria vào Post (quan hệ 1-1)
+            criteria.setPost(post);
 
             // Lưu vào database
-            accomodationRepository.save(accomodation);
+            criteriaRepository.save(criteria);
             postRepository.save(post);
 
             return postMapper.toUpdatePostResponse(post);

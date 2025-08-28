@@ -1,12 +1,12 @@
-package com.kltn.dto.request.accommodation;
+package com.kltn.dto.request.criteria;
 
-import com.kltn.repository.custom.CustomAccomodationQuery;
+import com.kltn.repository.custom.CustomCriteriaQuery;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 @Data
-public class GetAccomodationRequest extends CustomAccomodationQuery.AccomodationFilterParam {
+public class GetCriteriaRequest extends CustomCriteriaQuery.CriteriaFilterParam {
     @Min(value = 0, message = "Số trang phải bắt đầu từ 0")
     private int start = 0;
 

@@ -44,8 +44,8 @@ public class Post {
     private String title;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "accomodation_id")
-    private Accomodation accomodation; //Chỗ ở
+    @JoinColumn(name = "criteria_id")
+    private Criteria criteria; //Chỗ ở
 
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)

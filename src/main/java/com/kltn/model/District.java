@@ -26,5 +26,5 @@ public class District {
             mappedBy = "district",
             orphanRemoval = true)
     @JsonManagedReference
-    private Collection<Accomodation> accomodations;
+    private Collection<Criteria> criterias;
 }

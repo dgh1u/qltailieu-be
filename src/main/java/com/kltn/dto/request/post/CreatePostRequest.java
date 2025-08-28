@@ -1,6 +1,6 @@
 package com.kltn.dto.request.post;
 
-import com.kltn.dto.request.accommodation.CreateAccommodationRequest;
+import com.kltn.dto.request.criteria.CreateCriteriaRequest;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -14,5 +14,5 @@ public class CreatePostRequest {
     @NotNull
     @Size(min = 50, max = 500, message = "Nội dung mô tả phải từ 50 đến 500 ký tự")
     private String content;
-    private CreateAccommodationRequest accomodation;
+    private CreateCriteriaRequest criteria;
 }

@@ -1,6 +1,6 @@
 package com.kltn.dto.response.post;
 
-import com.kltn.dto.entity.AccomodationDto;
+import com.kltn.dto.entity.CriteriaDto;
 import com.kltn.dto.entity.UserDto;
 import lombok.Data;
 
@@ -16,7 +16,7 @@ public class UpdatePostResponse {
     private LocalDateTime createAt;
     private LocalDateTime lastUpdate;
     private boolean del;
-    private AccomodationDto accomodationDTO;
+    private CriteriaDto criteriaDTO;
     private UserDto userDTO;
     private String type;
 }

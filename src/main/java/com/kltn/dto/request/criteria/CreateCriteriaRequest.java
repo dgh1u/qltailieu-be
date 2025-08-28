@@ -1,4 +1,4 @@
-package com.kltn.dto.request.accommodation;
+package com.kltn.dto.request.criteria;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -9,7 +9,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class CreateAccommodationRequest {
+public class CreateCriteriaRequest {
     // Diện tích (phải lớn hơn 0)
     @Min(value = 0, message = "Diện tích phải lớn hơn hoặc bằng 0")
     private double acreage;

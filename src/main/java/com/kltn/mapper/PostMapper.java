@@ -12,11 +12,11 @@ import org.mapstruct.Mapping;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, AccommodationMapper.class, CommentMapper.class, DocumentMapper.class})
+@Mapper(componentModel = "spring", uses = {UserMapper.class, CriteriaMapper.class, CommentMapper.class, DocumentMapper.class})
 public interface PostMapper {
 
     @Mapping(target = "userDTO", source = "user")
-    @Mapping(target = "accomodationDTO", source = "accomodation")
+    @Mapping(target = "criteriaDTO", source = "criteria")
     @Mapping(target = "documents", expression = "java(getDocumentDtos(post))")
 //    @Mapping(target = "commentDTOS", source = "comments")
 //    @Mapping(target = "imageStrings", expression = "java(post.getImages() != null ? post.getImages().stream().map(Image::getUrl).collect(Collectors.toList()) : Collections.emptyList())")
@@ -37,16 +37,16 @@ public interface PostMapper {
     @Mapping(target = "lastUpdate", ignore = true)
     @Mapping(target = "notApproved", ignore = true)
     @Mapping(target = "createAt", ignore = true)
-    @Mapping(target = "accomodation", ignore = true)
+    @Mapping(target = "criteria", ignore = true)
     @Mapping(target = "user", ignore = true)
     Post createRequestDtoToPost(CreatePostRequest createPostRequest);
 
-    @Mapping(source = "post.accomodation" , target = "accomodationDTO")
+    @Mapping(source = "post.criteria" , target = "criteriaDTO")
     @Mapping(source = "post.user" , target = "userDTO")
     UpdatePostResponse toUpdatePostResponse(Post post);
 
     @Mapping(target = "user", source = "post.user.email")  // Ánh xạ từ user sang email thay vì username
-    @Mapping(target = "accomodationId", source = "post.accomodation.id")  // Ánh xạ từ accomodation sang id
+    @Mapping(target = "criteriaId", source = "post.criteria.id")  // Ánh xạ từ criteria sang id
     @Mapping(target = "createAt", source = "post.createAt")  // Ánh xạ createAt
     @Mapping(target = "lastUpdate", source = "post.lastUpdate")  // Ánh xạ lastUpdate
     CreatePostResponse toCreatePostResponse(Post post);

@@ -25,7 +25,7 @@ public class PostDto {
 
     private UserDto userDTO;
 
-    private AccomodationDto accomodationDTO;
+    private CriteriaDto criteriaDTO;
 
     private List<CommentDto> commentDTOS;
 

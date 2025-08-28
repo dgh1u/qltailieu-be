@@ -1,6 +1,6 @@
 package com.kltn.repository.custom;
 
-import com.kltn.model.Accomodation;
+import com.kltn.model.Criteria;
 import com.kltn.model.District;
 import com.kltn.model.Post;
 import com.kltn.utils.CriteriaBuilderUtil;
@@ -14,13 +14,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomAccomodationQuery {
+public class CustomCriteriaQuery {
 
-    private CustomAccomodationQuery() {}
+    private CustomCriteriaQuery() {}
 
     @Data
     @NoArgsConstructor
-    public static class AccomodationFilterParam {
+    public static class CriteriaFilterParam {
         private String keywords;
         private Double minAcreage;
         private Double maxAcreage;
@@ -51,11 +51,11 @@ public class CustomAccomodationQuery {
         private String major;
     }
 
-    public static Specification<Accomodation> getFilterAccomodation(AccomodationFilterParam param) {
+    public static Specification<Criteria> getFilterCriteria(CriteriaFilterParam param) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            Join<Accomodation, District> districtJoin = root.join("district");
-            Join<Accomodation, Post> postJoin = root.join("post", JoinType.LEFT);
+            Join<Criteria, District> districtJoin = root.join("district");
+            Join<Criteria, Post> postJoin = root.join("post", JoinType.LEFT);
 
             // Lọc theo tiêu đề bài đăng
             if (param.getKeywords() != null) {

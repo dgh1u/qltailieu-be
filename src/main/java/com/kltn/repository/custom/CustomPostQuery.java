@@ -1,7 +1,7 @@
 package com.kltn.repository.custom;
 
 import com.kltn.constant.Constant;
-import com.kltn.model.Accomodation;
+import com.kltn.model.Criteria;
 import com.kltn.model.District;
 import com.kltn.model.Post;
 import com.kltn.model.User;
@@ -23,7 +23,7 @@ public class CustomPostQuery {
 
     @Data
     @NoArgsConstructor
-    public static class PostFilterParam extends CustomAccomodationQuery.AccomodationFilterParam {
+    public static class PostFilterParam extends CustomCriteriaQuery.CriteriaFilterParam {
         private String keywords;
         private Boolean approved;
         private Boolean notApproved;
@@ -75,7 +75,7 @@ public class CustomPostQuery {
                 predicates.add(criteriaBuilder.equal(userJoin.get("id"), param.getUserId()));
             }
 
-            // Nếu có bất kỳ trường lọc của Accomodation nào được set, thực hiện join với Accomodation
+            // Nếu có bất kỳ trường lọc của Criteria nào được set, thực hiện join với Criteria
             if (param.getMinPrice() != null || param.getMaxPrice() != null ||
                     param.getMinAcreage() != null || param.getMaxAcreage() != null ||
                     param.getInterior() != null || param.getKitchen() != null ||
@@ -91,107 +91,107 @@ public class CustomPostQuery {
                     (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) ||
                     (param.getKeywords() != null && !param.getKeywords().isEmpty())
             ) {
-                Join<Post, Accomodation> accomodationJoin = root.join("accomodation", JoinType.LEFT);
+                Join<Post, Criteria> criteriaJoin = root.join("criteria", JoinType.LEFT);
 
                 // Lọc theo khoảng giá
                 if (param.getMinPrice() != null && param.getMaxPrice() != null) {
-                    predicates.add(criteriaBuilder.between(accomodationJoin.get("price"),
+                    predicates.add(criteriaBuilder.between(criteriaJoin.get("price"),
                             param.getMinPrice(), param.getMaxPrice()));
                 } else if (param.getMinPrice() != null) {
-                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(accomodationJoin.get("price"),
+                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(criteriaJoin.get("price"),
                             param.getMinPrice()));
                 } else if (param.getMaxPrice() != null) {
-                    predicates.add(criteriaBuilder.lessThanOrEqualTo(accomodationJoin.get("price"),
+                    predicates.add(criteriaBuilder.lessThanOrEqualTo(criteriaJoin.get("price"),
                             param.getMaxPrice()));
                 }
 
                 // Lọc theo diện tích
                 if (param.getMinAcreage() != null && param.getMaxAcreage() != null) {
-                    predicates.add(criteriaBuilder.between(accomodationJoin.get("acreage"),
+                    predicates.add(criteriaBuilder.between(criteriaJoin.get("acreage"),
                             param.getMinAcreage(), param.getMaxAcreage()));
                 } else if (param.getMinAcreage() != null) {
-                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(accomodationJoin.get("acreage"),
+                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(criteriaJoin.get("acreage"),
                             param.getMinAcreage()));
                 } else if (param.getMaxAcreage() != null) {
-                    predicates.add(criteriaBuilder.lessThanOrEqualTo(accomodationJoin.get("acreage"),
+                    predicates.add(criteriaBuilder.lessThanOrEqualTo(criteriaJoin.get("acreage"),
                             param.getMaxAcreage()));
                 }
 
                 // Lọc theo các thuộc tính boolean
                 if (param.getInterior() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("interior"), param.getInterior()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("interior"), param.getInterior()));
                 }
                 if (param.getKitchen() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("kitchen"), param.getKitchen()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("kitchen"), param.getKitchen()));
                 }
                 if (param.getAirConditioner() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("airConditioner"), param.getAirConditioner()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("airConditioner"), param.getAirConditioner()));
                 }
                 if (param.getHeater() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("heater"), param.getHeater()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("heater"), param.getHeater()));
                 }
                 if (param.getInternet() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("internet"), param.getInternet()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("internet"), param.getInternet()));
                 }
                 if (param.getOwner() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("owner"), param.getOwner()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("owner"), param.getOwner()));
                 }
                 if (param.getParking() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("parking"), param.getParking()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("parking"), param.getParking()));
                 }
                 if (param.getToilet() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("toilet"), param.getToilet()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("toilet"), param.getToilet()));
                 }
                 if (param.getTime() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("time"), param.getTime()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("time"), param.getTime()));
                 }
                 if (param.getSecurity() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("security"), param.getSecurity()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("security"), param.getSecurity()));
                 }
                 if (param.getGender() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("gender"), param.getGender()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("gender"), param.getGender()));
                 }
 
                 // Cập nhật xử lý motel - hỗ trợ cả hai phương thức
                 if (param.getMotels() != null && !param.getMotels().isEmpty()) {
                     // Sử dụng IN khi có nhiều giá trị
-                    predicates.add(accomodationJoin.get("motel").in(param.getMotels()));
+                    predicates.add(criteriaJoin.get("motel").in(param.getMotels()));
                 } else if (param.getMotel() != null) {
                     // Vẫn giữ phương thức cũ để đảm bảo tương thích ngược
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("motel"), param.getMotel()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("motel"), param.getMotel()));
                 }
 
                 if (param.getOpenHours() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("openHours"), param.getOpenHours()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("openHours"), param.getOpenHours()));
                 }
 
                 if (param.getSecondMotel() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("secondMotel"), param.getSecondMotel()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("secondMotel"), param.getSecondMotel()));
                 }
 
                 if (param.getDelivery() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("delivery"), param.getDelivery()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("delivery"), param.getDelivery()));
                 }
 
                 if (param.getDineIn() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("dineIn"), param.getDineIn()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("dineIn"), param.getDineIn()));
                 }
 
                 if (param.getTakeAway() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("takeAway"), param.getTakeAway()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("takeAway"), param.getTakeAway()));
                 }
 
                 if (param.getBigSpace() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("bigSpace"), param.getBigSpace()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("bigSpace"), param.getBigSpace()));
                 }
 
                 if (param.getMajor() != null) {
-                    predicates.add(criteriaBuilder.equal(accomodationJoin.get("major"), param.getMajor()));
+                    predicates.add(criteriaBuilder.equal(criteriaJoin.get("major"), param.getMajor()));
                 }
 
                 // Lọc theo districtName
                 if (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) {
-                    Join<Accomodation, District> districtJoin = accomodationJoin.join("district", JoinType.LEFT);
+                    Join<Criteria, District> districtJoin = criteriaJoin.join("district", JoinType.LEFT);
                     predicates.add(criteriaBuilder.equal(districtJoin.get("name"), param.getDistrictName()));
                 }
             }
@@ -199,8 +199,8 @@ public class CustomPostQuery {
             // Xử lý sắp xếp
             if (param.sortField != null && !param.sortField.equals("")) {
                 if ("price".equals(param.sortField)) {
-                    // Sắp xếp theo giá - cần join với Accomodation nếu chưa join
-                    Join<Post, Accomodation> priceJoin = root.join("accomodation", JoinType.LEFT);
+                    // Sắp xếp theo giá - cần join với Criteria nếu chưa join
+                    Join<Post, Criteria> priceJoin = root.join("criteria", JoinType.LEFT);
 
                     if (param.sortType.equals(Constant.SortType.DESC) || param.sortType.equals("")) {
                         // Giá cao trước (DESC)

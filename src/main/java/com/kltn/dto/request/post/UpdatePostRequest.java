@@ -1,6 +1,6 @@
 package com.kltn.dto.request.post;
 
-import com.kltn.dto.entity.AccomodationDto;
+import com.kltn.dto.entity.CriteriaDto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -13,5 +13,5 @@ public class UpdatePostRequest {
     @NotNull
     @Size(min = 50, max = 500)
     private String content;
-    private AccomodationDto accomodation;
+    private CriteriaDto criteria;
 }
