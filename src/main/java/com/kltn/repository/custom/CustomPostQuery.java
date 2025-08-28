@@ -88,6 +88,7 @@ public class CustomPostQuery {
                     param.getOpenHours() != null || param.getSecondMotel() != null ||
                     param.getDelivery() != null || param.getDineIn() != null ||
                     param.getTakeAway() != null || param.getBigSpace() != null ||
+                    param.getMajor() != null ||
                     (param.getDistrictName() != null && !param.getDistrictName().isEmpty()) ||
                     (param.getKeywords() != null && !param.getKeywords().isEmpty())
             ) {

@@ -2,6 +2,7 @@ package com.kltn.controller;
 
 import com.kltn.dto.response.dashboard.DashboardRevenueStatDTO;
 import com.kltn.dto.response.dashboard.DashboardSummaryDTO;
+import com.kltn.dto.response.dashboard.DashboardUserPostStatDTO;
 import com.kltn.service.DashboardService;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.constraints.Pattern;
@@ -19,28 +20,41 @@ public class DashboardController {
     private final DashboardService dashboardService;
 
     /**
-     * Endpoint thống kê doanh thu và số giao dịch theo đơn vị: day, month hoặc year.
-     * Ví dụ: GET /api/dashboard/revenue?start=2023-01-01&end=2023-12-31&groupBy=month
+     * Endpoint thống kê doanh thu và số giao dịch theo đơn vị: day, month hoặc
+     * year.
+     * Ví dụ: GET
+     * /api/dashboard/revenue?start=2023-01-01&end=2023-12-31&groupBy=month
      */
     @ApiOperation(value = "Thống kê doanh thu và số giao dịch theo ngày/tháng/năm")
     @GetMapping("/revenue")
     public ResponseEntity<List<DashboardRevenueStatDTO>> getRevenueStatistics(
             @RequestParam(required = false) String start,
             @RequestParam(required = false) String end,
-            @RequestParam(defaultValue = "day")
-            @Pattern(regexp = "day|month|year", message = "groupBy phải là day, month hoặc year")
-            String groupBy) {
+            @RequestParam(defaultValue = "day") @Pattern(regexp = "day|month|year", message = "groupBy phải là day, month hoặc year") String groupBy) {
         List<DashboardRevenueStatDTO> stats = dashboardService.getRevenueStatistics(start, end, groupBy);
         return ResponseEntity.ok(stats);
     }
 
     /**
-     * Endpoint thống kê tổng hợp: tổng số người dùng, giao dịch, bài viết và doanh thu.
+     * Endpoint thống kê tổng hợp: tổng số người dùng, giao dịch, bài viết và doanh
+     * thu.
      */
     @ApiOperation(value = "Thống kê tổng hợp số liệu trên dashboard")
     @GetMapping("/summary")
     public ResponseEntity<DashboardSummaryDTO> getDashboardSummary() {
         DashboardSummaryDTO summary = dashboardService.getDashboardSummary();
         return ResponseEntity.ok(summary);
+    }
+
+    /**
+     * Endpoint thống kê số liệu bài viết của người dùng theo ngày/tháng.
+     */
+    @ApiOperation(value = "Thống kê số liệu bài viết của người dùng theo ngày/tháng")
+    @GetMapping("/post-stats")
+    public ResponseEntity<List<DashboardUserPostStatDTO>> getUserPostStatistics(
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end,
+            @RequestParam(defaultValue = "month") String groupBy) {
+        return ResponseEntity.ok(dashboardService.getUserPostStatistics(start, end, groupBy));
     }
 }

@@ -45,7 +45,7 @@ public class Post {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "criteria_id")
-    private Criteria criteria; //Chỗ ở
+    private Criteria criteria; 
 
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
