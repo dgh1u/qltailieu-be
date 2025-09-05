@@ -26,6 +26,22 @@ spring:
     port: ${MAIL_PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: "*"
+            protocols: TLSv1.2
+          connectiontimeout: 60000
+          timeout: 60000
+          writetimeout: 60000
+        transport:
+          protocol: smtp
 jwt:
   key: ${JWT_KEY}
 idea:
