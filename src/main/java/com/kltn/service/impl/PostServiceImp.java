@@ -44,8 +44,6 @@ public class PostServiceImp implements PostService {
 
     private final UserRepository userRepository;
 
-    private final DistrictRepository districtRepository;
-
     private final CriteriaRepository criteriaRepository;
 
     private final CommentRepository commentRepository;
@@ -172,19 +170,8 @@ public class PostServiceImp implements PostService {
             Post post = postRepository.findPostById(id)
                     .orElseThrow(() -> new DataNotFoundException("Không tìm thấy bài đăng với ID: " + id));
 
-            // Tìm hoặc tạo District
-            District district = districtRepository.findDistrictById(updatePostRequest.getCriteria().getDistrict().getId())
-                    .orElseGet(() -> {
-                        District newDistrict = new District();
-                        newDistrict.setName("Default District");
-
-                        return districtRepository.save(newDistrict);
-                    });
-
             // Cập nhật thông tin Criteria
             Criteria criteria = criteriaMapper.toCriteria(updatePostRequest.getCriteria());
-            criteria.setDistrict(district);
-
 
             // Cập nhật thông tin Post
             post.setTitle(updatePostRequest.getTitle());

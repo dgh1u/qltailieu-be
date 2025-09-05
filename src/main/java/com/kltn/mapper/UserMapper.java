@@ -17,7 +17,6 @@ public interface UserMapper {
     @Mapping(target = "role",ignore = true)
     User toCreateUser(CreateUserRequest userRequest);
 
-    //@Mapping(target = "role",ignore = true)
-    @Mapping(target = "balance", source = "balance")
+
     UserDto toUserDto(User user);
 }

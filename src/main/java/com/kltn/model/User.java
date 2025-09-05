@@ -49,8 +49,7 @@ public class User {
     @Column(name = "file_type", length = 50)
     private String fileType;
 
-    @Column(name = "balance")
-    private Integer balance = 0;
+
 
     @Column(name = "otp")
     private String otp;

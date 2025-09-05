@@ -97,12 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new DataExistException("Không tồn tại người dùng");
             }
             User user = userOptional.get();
-            //Nếu trạng thái = Success thì cộng tiền vòa số dư tài khoản
-            if (request.isSuccess()) {
-                Integer price = user.getBalance() + request.getData().getAmount();
-                user.setBalance(price);
-                userRepository.save(user);
-            }
+
 
             // Tìm PaymentHistory dựa trên orderCode (kiểu Long)
             Long orderCode = request.getData().getOrderCode();
