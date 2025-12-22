@@ -3,10 +3,8 @@ package com.kltn.service.impl;
 import com.kltn.dto.response.dashboard.DashboardRevenueStatDTO;
 import com.kltn.dto.response.dashboard.DashboardSummaryDTO;
 import com.kltn.dto.response.dashboard.DashboardUserPostStatDTO;
-import com.kltn.model.PaymentHistory;
 import com.kltn.model.Post;
 import com.kltn.model.User;
-import com.kltn.repository.PaymentRepository;
 import com.kltn.repository.UserRepository;
 import com.kltn.repository.PostRepository;
 import com.kltn.service.DashboardService;
@@ -34,86 +32,26 @@ import java.util.AbstractMap;
 @Slf4j
 public class DashboardServiceImp implements DashboardService {
 
-    private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    // Giả sử định dạng của trường transactionDateTime là "yyyy-MM-dd HH:mm:ss"
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
+    // Lấy thống kê doanh thu theo khoảng thời gian (chức năng đã bị xóa)
     @Override
     public List<DashboardRevenueStatDTO> getRevenueStatistics(String start, String end, String groupBy) {
-        // Xây dựng Specification để lọc theo khoảng thời gian dựa vào
-        // transactionDateTime
-        Specification<PaymentHistory> spec = (root, query, cb) -> {
-            List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
-            if (start != null && !start.isEmpty()) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("transactionDateTime"), start));
-            }
-            if (end != null && !end.isEmpty()) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("transactionDateTime"), end));
-            }
-            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
-        };
-
-        List<PaymentHistory> payments = paymentRepository.findAll(spec);
-
-        // Hàm nhóm các giao dịch theo đơn vị: day, month hoặc year
-        Function<PaymentHistory, String> groupingFunction = payment -> {
-            try {
-                LocalDateTime ldt = LocalDateTime.parse(payment.getTransactionDateTime(), dateTimeFormatter);
-                switch (groupBy.toLowerCase()) {
-                    case "month":
-                        // vd: "2023-05"
-                        return String.format("%d-%02d", ldt.getYear(), ldt.getMonthValue());
-                    case "year":
-                        // vd: "2023"
-                        return String.valueOf(ldt.getYear());
-                    case "day":
-                    default:
-                        // vd: "2023-05-28"
-                        return ldt.toLocalDate().toString();
-                }
-            } catch (Exception e) {
-                log.error("Lỗi chuyển đổi transactionDateTime: {}", payment.getTransactionDateTime(), e);
-                return "Other";
-            }
-        };
-
-        Map<String, List<PaymentHistory>> grouped = payments.stream()
-                .collect(Collectors.groupingBy(groupingFunction));
-
-        List<DashboardRevenueStatDTO> result = new ArrayList<>();
-
-        for (Map.Entry<String, List<PaymentHistory>> entry : grouped.entrySet()) {
-            String groupKey = entry.getKey();
-            List<PaymentHistory> list = entry.getValue();
-            long transactionCount = list.size();
-            long totalRevenue = list.stream()
-                    .filter(PaymentHistory::isSuccess)
-                    .mapToLong(ph -> ph.getAmount() != null ? ph.getAmount() : 0)
-                    .sum();
-            result.add(new DashboardRevenueStatDTO(groupKey, transactionCount, totalRevenue));
-        }
-
-        // Sắp xếp theo groupKey (nếu cần, theo thứ tự thời gian)
-        result.sort(Comparator.comparing(DashboardRevenueStatDTO::getGroupKey));
-        return result;
+        // Payment functionality removed
+        return new ArrayList<>();
     }
 
+    // Lấy tổng quan thống kê dashboard (tổng số người dùng và bài viết)
     @Override
     public DashboardSummaryDTO getDashboardSummary() {
         long totalUsers = userRepository.count();
-        long totalPayments = paymentRepository.count();
-        long totalRevenue = paymentRepository.findAll().stream()
-                .filter(PaymentHistory::isSuccess)
-                .mapToLong(ph -> ph.getAmount() != null ? ph.getAmount() : 0)
-                .sum();
         long totalPosts = postRepository.count();
 
-        return new DashboardSummaryDTO(totalUsers, totalPayments, totalPosts, totalRevenue);
+        return new DashboardSummaryDTO(totalUsers, totalPosts);
     }
 
+    // Lấy thống kê số lượng bài viết theo thời gian (ngày/tháng/năm)
     @Override
     public List<DashboardUserPostStatDTO> getUserPostStatistics(String start, String end, String groupBy) {
         // Specification cho Post

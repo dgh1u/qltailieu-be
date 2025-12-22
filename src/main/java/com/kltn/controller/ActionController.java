@@ -21,15 +21,14 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/actions")
 @RequiredArgsConstructor
-@Api(value = "Tìm nhà trọ", description = "Xem các hoạt động của website")
+@Api(value = "Tài liệu", description = "Xem các hoạt động của website")
 public class ActionController {
-
 
     private final ActionServiceImp actionService;
 
-
     private final ActionMapper actionMapper;
 
+    // API lấy danh sách hoạt động với phân trang
     @ApiOperation(value = "Lấy một trang các hoạt động")
     @GetMapping
     public ResponseEntity<?> getAction(@Valid @ModelAttribute GetActionRequest request) {
@@ -42,6 +41,7 @@ public class ActionController {
 
     }
 
+    // API đánh dấu hoạt động đã được đọc
     @ApiOperation(value = "Thay đổi trạng thái xem của hoạt động")
     @PutMapping("/{id}/mark-read")
     public ResponseEntity<?> markActionAsRead(@PathVariable Long id) {
@@ -50,4 +50,3 @@ public class ActionController {
     }
 
 }
-

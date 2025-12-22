@@ -29,6 +29,7 @@ public class ImageServiceImp implements ImageService {
 
     private final PostRepository postRepository;
 
+    // Upload file ảnh cho bài viết
     @Override
     public ImageDto uploadFile(Long idPost, MultipartFile file) {
         // Kiểm tra bài đăng có tồn tại không
@@ -43,17 +44,18 @@ public class ImageServiceImp implements ImageService {
                     .toUriString();
             // Trả về thông tin ảnh
             return new ImageDto(image.getId(), image.getFileName(), file.getContentType(), fileDownloadUri, idPost);
-        }else{
+        } else {
             throw new DataNotFoundException("I can't not found postID " + idPost);
         }
     }
 
+    // Lưu trữ ảnh vào database
     @Override
     public Image storeImage(Long idPost, MultipartFile file) {
         // Lấy tên file và validate
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        try{
-            if(fileName.contains("..")){
+        try {
+            if (fileName.contains("..")) {
                 throw new DataNotFoundException("I can't found file name in " + fileName);
             }
             // Tìm bài đăng
@@ -63,44 +65,48 @@ public class ImageServiceImp implements ImageService {
             Image image = new Image(fileName, file.getContentType(), file.getBytes(), post.get());
             return imageRepository.save(image);
         } catch (Exception e) {
-            throw new MyCustomException("Error while i handle save image " +fileName +"!"+ e);
+            throw new MyCustomException("Error while i handle save image " + fileName + "!" + e);
         }
     }
 
+    // Lấy ảnh theo ID
     @Override
     public Image getImage(String imageId) {
         return imageRepository.findById(imageId)
                 .orElseThrow(() -> new DataNotFoundException("Không tim thấy ảnh có id " + imageId));
     }
 
+    // Lấy danh sách link ảnh theo ID bài viết
     @Override
     public List<String> getImageByIdPost(Long idPost) {
         // Tạo danh sách để chứa link ảnh
         List<String> uri = new ArrayList<>();
         // Tìm bài đăng
         Optional<Post> post = postRepository.findById(idPost);
-        //Tìm tất cả ảnh của bài đăng này
+        // Tìm tất cả ảnh của bài đăng này
         List<Image> images = imageRepository.findImageByPost(post.get());
         for (Image image : images) {
             uri.add(ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/api/image/")
                     .path(image.getId())
-            .toUriString());
+                    .toUriString());
         }
         return uri;
     }
 
+    // Xóa tất cả ảnh của bài viết
     @Override
     public void deleteAllImages(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
         if (post.isPresent()) {
             List<Image> images = imageRepository.findImageByPost(post.get());
             imageRepository.deleteAll(images);
-        }else{
+        } else {
             throw new DataNotFoundException("I can't not found postID " + idPost);
         }
     }
 
+    // Lấy danh sách ảnh dạng DTO (base64) theo ID bài viết
     @Override
     public List<ImageDto> getImageDTOByIdPost(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
@@ -113,7 +119,7 @@ public class ImageServiceImp implements ImageService {
                 imageDtos.add(imageDto);
             }
             return imageDtos;
-        }else{
+        } else {
             throw new DataNotFoundException("I can't not found postID " + idPost);
         }
     }

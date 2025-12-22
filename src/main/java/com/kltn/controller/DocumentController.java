@@ -23,10 +23,11 @@ public class DocumentController {
 
     private final DocumentService documentService;
 
+    // API upload tài liệu cho bài viết
     @ApiOperation(value = "Upload tài liệu cho bài đăng")
     @PostMapping("/document/upload/{postId}")
     public ResponseEntity<?> uploadDocument(@PathVariable Long postId,
-                                            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file) {
         try {
             DocumentDto documentDto = documentService.uploadDocument(postId, file);
             return BaseResponse.successData(documentDto);
@@ -35,6 +36,7 @@ public class DocumentController {
         }
     }
 
+    // API tải xuống tài liệu
     @ApiOperation(value = "Tải tài liệu về máy")
     @GetMapping("/document/download/{documentId}")
     public ResponseEntity<ByteArrayResource> downloadDocument(@PathVariable String documentId) {
@@ -55,6 +57,7 @@ public class DocumentController {
         }
     }
 
+    // API lấy danh sách tài liệu của bài viết
     @ApiOperation(value = "Lấy danh sách tài liệu của bài đăng")
     @GetMapping("/documents/{postId}")
     public ResponseEntity<?> getDocumentsByPost(@PathVariable Long postId) {
@@ -66,6 +69,7 @@ public class DocumentController {
         }
     }
 
+    // API xóa tài liệu theo ID
     @ApiOperation(value = "Xóa một tài liệu cụ thể")
     @DeleteMapping("/document/{documentId}")
     public ResponseEntity<?> deleteSingleDocument(@PathVariable String documentId) {

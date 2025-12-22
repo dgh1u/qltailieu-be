@@ -41,22 +41,23 @@ public class PostController {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
 
-    //Test
+    // API test hello world
     @GetMapping("/post/hello-world")
-    public String HelloWorld(){
+    public String HelloWorld() {
         return "Hello World";
     }
 
-
-    // hoàn thành
+    // API lấy danh sách tất cả bài viết với phân trang và bộ lọc
     @ApiOperation(value = "Lấy tất cả tin đăng")
     @GetMapping("/posts")
     public ResponseEntity<?> getAllPost(@Valid @ModelAttribute GetPostRequest request) {
         Page<Post> page = postService.getAllPost(request, PageRequest.of(request.getStart(), request.getLimit()));
-        return BaseResponse.successListData(page.getContent().stream().map(postMapper::toPostDto).collect(Collectors.toList()), (int) page.getTotalElements());
+        return BaseResponse.successListData(
+                page.getContent().stream().map(postMapper::toPostDto).collect(Collectors.toList()),
+                (int) page.getTotalElements());
     }
 
-    // hoàn thành
+    // API lấy chi tiết bài viết theo ID
     @ApiOperation(value = "Lấy thông tin của một tin đăng")
     @GetMapping("/post/{id}")
     public ResponseEntity<?> getPostById(@PathVariable Long id) {
@@ -68,9 +69,11 @@ public class PostController {
         }
     }
 
+    // API tạo bài viết mới
     @ApiOperation(value = "Đăng tin mới")
     @PostMapping("/post")
-    public ResponseEntity<?> createPost(@RequestHeader("Authorization") String token, @RequestBody @Valid CreatePostRequest createPostRequest) {
+    public ResponseEntity<?> createPost(@RequestHeader("Authorization") String token,
+            @RequestBody @Valid CreatePostRequest createPostRequest) {
         try {
 
             String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
@@ -80,30 +83,34 @@ public class PostController {
         } catch (Exception e) {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new Response<>("Lỗi không xác định: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR.value()));
+                    .body(new Response<>("Lỗi không xác định: " + e.getMessage(), null,
+                            HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }
     }
 
-
+    // API duyệt hoặc khóa bài viết
     @ApiOperation(value = "Duyệt/Khóa tin đăng")
     @PutMapping("/post/{id}/approve/{bool}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> approvePostAndLogging(@RequestHeader("Authorization") String token,
-                                                        @PathVariable Long id,
-                                                        @PathVariable boolean bool) {
+            @PathVariable Long id,
+            @PathVariable boolean bool) {
         try {
             String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
-            return BaseResponse.successData(postService.ApprovePost(id, userId, bool));  // Trả về status 200 nếu duyệt hoặc khóa thành công
+            return BaseResponse.successData(postService.ApprovePost(id, userId, bool)); // Trả về status 200 nếu duyệt
+                                                                                        // hoặc khóa thành công
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new Response<>("Lỗi không xác định: " + e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR.value()));
+                    .body(new Response<>("Lỗi không xác định: " + e.getMessage(), null,
+                            HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }
     }
 
-    // ok
+    // API cập nhật thông tin bài viết
     @ApiOperation(value = "Cập nhật một tin đăng")
     @PutMapping("/post/{id}")
-    public ResponseEntity<?> updatePost(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody UpdatePostRequest updatePostRequest) {
+    public ResponseEntity<?> updatePost(@RequestHeader("Authorization") String token, @PathVariable Long id,
+            @RequestBody UpdatePostRequest updatePostRequest) {
         try {
             String userId = jwtConfig.getUserIdFromJWT(token.split(" ")[1]);
             UpdatePostResponse updatedPost = postService.updatePost(id, updatePostRequest, userId);
@@ -113,12 +120,14 @@ public class PostController {
         }
     }
 
+    // API ẩn hoặc hiển thị bài viết
     @ApiOperation(value = "Ẩn/Mở khóa một tin đăng")
     @PutMapping("/post/hide/{id}")
     public ResponseEntity<?> hidePost(@PathVariable Long id) {
         return BaseResponse.successData(postService.hidePost(id));
     }
 
+    // API xóa bài viết bởi Admin
     @ApiOperation(value = "Xóa một tin đăng")
     @DeleteMapping("/post/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
@@ -126,22 +135,23 @@ public class PostController {
         return BaseResponse.successData(postService.deletePostByAdmin(id));
     }
 
+    // API lấy danh sách bài viết theo người dùng
+    @ApiOperation(value = "Lấy danh sách tin đăng của một người dùng")
+    @GetMapping("/posts/{idUser}")
+    public ResponseEntity<?> getPostsByUser(@PathVariable Long idUser, @Valid @ModelAttribute GetPostRequest request) {
+        // Gán idUser vào bộ lọc (đảm bảo GetPostRequest có trường userId hoặc chuyển
+        // sang PostFilterParam nếu cần)
+        request.setUserId(idUser);
 
-@ApiOperation(value = "Lấy danh sách tin đăng của một người dùng")
-@GetMapping("/posts/{idUser}")
-public ResponseEntity<?> getPostsByUser(@PathVariable Long idUser, @Valid @ModelAttribute GetPostRequest request) {
-    // Gán idUser vào bộ lọc (đảm bảo GetPostRequest có trường userId hoặc chuyển sang PostFilterParam nếu cần)
-    request.setUserId(idUser);
+        // Gọi service với bộ lọc đã thiết lập
+        Page<Post> page = postService.getAllPost(request, PageRequest.of(request.getStart(), request.getLimit()));
 
-    // Gọi service với bộ lọc đã thiết lập
-    Page<Post> page = postService.getAllPost(request, PageRequest.of(request.getStart(), request.getLimit()));
+        // Chuyển đổi và trả về kết quả
+        List<PostDto> postDtos = page.getContent().stream()
+                .map(postMapper::toPostDto)
+                .collect(Collectors.toList());
 
-    // Chuyển đổi và trả về kết quả
-    List<PostDto> postDtos = page.getContent().stream()
-            .map(postMapper::toPostDto)
-            .collect(Collectors.toList());
-
-    return BaseResponse.successListData(postDtos, (int) page.getTotalElements());
-}
+        return BaseResponse.successListData(postDtos, (int) page.getTotalElements());
+    }
 
 }

@@ -51,6 +51,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
 
     private final UserMapper userMapper;
 
+    // Xử lý đăng nhập người dùng với email và mật khẩu
     @Override
     public LoginResponse login(LoginRequest request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
@@ -66,7 +67,8 @@ public class AuthenticateServiceImp implements AuthenticateService {
         }
 
         // Tạo Authentication object
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -85,6 +87,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
                 .build();
     }
 
+    // Đăng ký tài khoản mới và gửi mã OTP xác thực qua email
     @Override
     public RegisterResponse register(RegisterRequest request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
@@ -94,7 +97,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
         User user = new User();
 
         Optional<Role> customerRole = roleRepository.findById(RoleEnum.CUSTOMER.name());
-        Role role=customerRole.get();
+        Role role = customerRole.get();
         if (!customerRole.isPresent()) {
             role.setRoleId(RoleEnum.CUSTOMER.name());
             role.setName("Khách hàng");
@@ -128,6 +131,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
                 .build();
     }
 
+    // Xác thực tài khoản người dùng thông qua mã OTP
     @Override
     public String verifyAccount(VerifyAccountRequest request) {
         String email = request.getEmail();
@@ -146,6 +150,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
         }
     }
 
+    // Tạo lại mã OTP mới và gửi lại cho người dùng qua email
     @Override
     public String regenerateOTP(RegenerateOtpRequest request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
@@ -161,6 +166,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
         return "Email đã gửi... Hãy xác thực trong 2 phút";
     }
 
+    // Xử lý quên mật khẩu và đặt lại mật khẩu mới sau khi xác thực OTP
     @Override
     public String forgotPassword(ForgotPasswordRequest request) {
         String email = request.getEmail();
@@ -180,6 +186,7 @@ public class AuthenticateServiceImp implements AuthenticateService {
         }
     }
 
+    // Cập nhật thông tin hồ sơ người dùng
     @Override
     public UserDto updateProfile(UpdateProfileRequest request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
@@ -187,12 +194,12 @@ public class AuthenticateServiceImp implements AuthenticateService {
             throw new DataExistException("Người dùng không tồn tại");
         }
         try {
-            User user =userOptional.get();
+            User user = userOptional.get();
             user.setFullName(request.getFullName());
             user.setPhone(request.getPhone());
             user.setAddress(request.getAddress());
             return userMapper.toUserDto(userRepository.saveAndFlush(user));
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new MyCustomException("Có lỗi xảy ra trong quá trình cập nhât người dùng");
         }
     }

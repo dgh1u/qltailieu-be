@@ -26,8 +26,4 @@ public interface PostService {
 
     ApprovePostResponse ApprovePost(Long idPost, String usernameApprove, boolean isApprove);
 
-    Page<PostDto> searchPostByMaps(SearchDto searchForm, int page, int sort);
-
-    Page<PostDto> getPostWaitingApprove( int page);
-
 }

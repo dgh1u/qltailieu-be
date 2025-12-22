@@ -25,12 +25,15 @@ public class CriteriaController {
     private final CriteriaService criteriaService;
     private final CriteriaMapper criteriaMapper;
 
-    // hoàn thành
+    // API lấy danh sách criteria với phân trang và bộ lọc
     @ApiOperation(value = "Lấy tất cả")
     @GetMapping("/criterias")
     public ResponseEntity<?> getAllCriteria(@Valid @ModelAttribute GetCriteriaRequest request) {
-        Page<Criteria> page = criteriaService.getAllCriteria(request, PageRequest.of(request.getStart(), request.getLimit()));
-        return BaseResponse.successListData(page.getContent().stream().map(criteriaMapper::toCriteriaDto).collect(Collectors.toList()), (int) page.getTotalElements());
+        Page<Criteria> page = criteriaService.getAllCriteria(request,
+                PageRequest.of(request.getStart(), request.getLimit()));
+        return BaseResponse.successListData(
+                page.getContent().stream().map(criteriaMapper::toCriteriaDto).collect(Collectors.toList()),
+                (int) page.getTotalElements());
     }
 
 }

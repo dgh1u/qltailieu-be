@@ -37,9 +37,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class PostServiceImp implements PostService {
-    //Inject Service
+    // Inject Service
     private final ApplicationEventPublisher applicationEventPublisher;
-    //Inject Repository into class
+    // Inject Repository into class
     private final PostRepository postRepository;
 
     private final UserRepository userRepository;
@@ -54,7 +54,6 @@ public class PostServiceImp implements PostService {
 
     private final ActionServiceImp actionService;
 
- ;   //Some Mapper in this
     private final PostMapper postMapper;
 
     private final CriteriaMapper criteriaMapper;
@@ -63,27 +62,27 @@ public class PostServiceImp implements PostService {
 
     private final CommentMapper commentMapper;
 
-    //hold
+    // Lấy danh sách tất cả bài viết theo bộ lọc và phân trang
     @Override
-        public Page<Post> getAllPost(CustomPostQuery.PostFilterParam param, PageRequest pageRequest) {
+    public Page<Post> getAllPost(CustomPostQuery.PostFilterParam param, PageRequest pageRequest) {
         try {
             Specification<Post> specification = CustomPostQuery.getFilterPost(param);
             return postRepository.findAll(specification, pageRequest);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new DataNotFoundException("Không có bài viết nào được tìm thấy! " + e.getMessage());
         }
     }
 
-    //hold
+    // Lấy chi tiết bài viết theo ID kèm theo comments, images, documents
     @Override
     public PostDto getPostById(Long id) {
         // Tìm bài viết
         Optional<Post> post = postRepository.findPostById(id);
 
         // Kiểm tra xem bài viết có tồn tại không
-        if(post.isPresent()) {
+        if (post.isPresent()) {
             PostDto postDto = postMapper.toPostDto(post.get());
-            //Lay cho o ra
+            // Lay cho o ra
             CriteriaDto criteriaDto = criteriaMapper.toCriteriaDto(post.get().getCriteria());
             // Lấy các bình luận của bài đăng
             List<CommentDto> commentDtos = new ArrayList<>();
@@ -111,6 +110,7 @@ public class PostServiceImp implements PostService {
         }
     }
 
+    // Tạo bài viết mới và lưu vào database
     @Override
     @Transactional
     public CreatePostResponse createPost(CreatePostRequest createPostRequest, String email) {
@@ -121,11 +121,6 @@ public class PostServiceImp implements PostService {
             }
             User user = userOptional.get();
 
-//            // Kiểm tra số dư và trừ đi 2000 nếu đủ
-//            if (user.getBalance() < 2000) {
-//                throw new DataNotFoundException("Số dư không đủ để đăng bài. Yêu cầu tối thiểu là 2000.");
-//            }
-//            user.setBalance(user.getBalance() - 2000);
             userRepository.save(user);
 
             // Tạo bài đăng mới
@@ -159,9 +154,7 @@ public class PostServiceImp implements PostService {
         }
     }
 
-
-
-
+    // Cập nhật thông tin bài viết và criteria
     @Override
     @Transactional
     public UpdatePostResponse updatePost(Long id, UpdatePostRequest updatePostRequest, String userId) {
@@ -195,6 +188,7 @@ public class PostServiceImp implements PostService {
         }
     }
 
+    // Ẩn hoặc hiện bài viết
     @Override
     public HiddenPostResponse hidePost(Long id) {
         try {
@@ -202,12 +196,14 @@ public class PostServiceImp implements PostService {
             Post post = postRepository.findById(id)
                     .orElseThrow(() -> new DataNotFoundException("Không tìm thấy bài đăng với ID " + id));
 
-            // Chuyển đổi trạng thái của thuộc tính del (nếu false -> true, nếu true -> false)
+            // Chuyển đổi trạng thái của thuộc tính del (nếu false -> true, nếu true ->
+            // false)
             post.setDel(!post.getDel());
             postRepository.save(post);
 
             // Tạo thông báo phù hợp dựa trên trạng thái mới của del
-            String statusMessage = post.getDel() ? "Bài đăng đã được ẩn thành công." : "Bài đăng đã được hiển thị thành công.";
+            String statusMessage = post.getDel() ? "Bài đăng đã được ẩn thành công."
+                    : "Bài đăng đã được hiển thị thành công.";
             return new HiddenPostResponse(post.getId(), statusMessage, post.getDel());
         } catch (DataNotFoundException e) {
             log.warn("Không tìm thấy bài đăng với ID: {}", id);
@@ -218,7 +214,7 @@ public class PostServiceImp implements PostService {
         }
     }
 
-
+    // Xóa bài viết bởi Admin
     @Override
     public DeletePostResponse deletePostByAdmin(Long id) {
         try {
@@ -240,6 +236,7 @@ public class PostServiceImp implements PostService {
         }
     }
 
+    // Duyệt hoặc khóa bài viết
     @Override
     public ApprovePostResponse ApprovePost(Long idPost, String usernameApprove, boolean isApprove) {
         try {
@@ -250,7 +247,8 @@ public class PostServiceImp implements PostService {
 
             Optional<User> userOpt = userRepository.findByEmail(usernameApprove);
             if (userOpt.isEmpty()) {
-                return new ApprovePostResponse(idPost, "Không tìm thấy người dùng có username: " + usernameApprove, false);
+                return new ApprovePostResponse(idPost, "Không tìm thấy người dùng có username: " + usernameApprove,
+                        false);
             }
 
             Post post = postOpt.get();
@@ -272,13 +270,6 @@ public class PostServiceImp implements PostService {
                 post.setApproved(false);
                 post.setNotApproved(true);
 
-//                // Hoàn tiền nếu bài viết đang ở trạng thái "Chờ duyệt"
-//                if (wasWaitingApproval) {
-//                    postOwner.setBalance(postOwner.getBalance() + 2000);
-//                    userRepository.save(postOwner);
-//                    log.info("Hoàn tiền 2000 cho user ID: {} khi khóa bài viết ID: {} từ trạng thái chờ duyệt",
-//                            postOwner.getId(), idPost);
-//                }
 
                 actionService.createAction(post, user, ActionName.BLOCK);
             }
@@ -286,9 +277,6 @@ public class PostServiceImp implements PostService {
             postRepository.save(post);
 
             String message = "Bài đăng đã được " + (isApprove ? "duyệt" : "khóa") + " thành công";
-//            if (!isApprove && post.getApproved() && post.getNotApproved()) {
-//                message += " và đã hoàn tiền 2000 cho chủ bài viết";
-//            }
 
             return new ApprovePostResponse(idPost, message, isApprove);
 
@@ -298,19 +286,4 @@ public class PostServiceImp implements PostService {
         }
     }
 
-
-    @Override
-    public Page<PostDto> searchPostByMaps(SearchDto searchForm, int page, int sort) {
-        return null;
-    }
-
-    @Override
-    public Page<PostDto> getPostWaitingApprove(int page) {
-        // Lấy danh sách bài đăng chờ duyệt từ repository với phân trang
-        Page<Post> posts = postRepository.findByApprovedFalseAndNotApprovedFalse(
-                PageRequest.of(page, 12, Sort.by("createAt").descending()));
-
-        // Chuyển đổi từ Page<Post> thành Page<PostDto>
-        return posts.map(postMapper::toPostDto);
-    }
 }

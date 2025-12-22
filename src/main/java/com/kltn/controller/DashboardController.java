@@ -19,12 +19,7 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    /**
-     * Endpoint thống kê doanh thu và số giao dịch theo đơn vị: day, month hoặc
-     * year.
-     * Ví dụ: GET
-     * /api/dashboard/revenue?start=2023-01-01&end=2023-12-31&groupBy=month
-     */
+    // API thống kê doanh thu theo thời gian
     @ApiOperation(value = "Thống kê doanh thu và số giao dịch theo ngày/tháng/năm")
     @GetMapping("/revenue")
     public ResponseEntity<List<DashboardRevenueStatDTO>> getRevenueStatistics(
@@ -35,10 +30,7 @@ public class DashboardController {
         return ResponseEntity.ok(stats);
     }
 
-    /**
-     * Endpoint thống kê tổng hợp: tổng số người dùng, giao dịch, bài viết và doanh
-     * thu.
-     */
+    // API lấy tổng quan thống kê dashboard
     @ApiOperation(value = "Thống kê tổng hợp số liệu trên dashboard")
     @GetMapping("/summary")
     public ResponseEntity<DashboardSummaryDTO> getDashboardSummary() {
@@ -46,9 +38,7 @@ public class DashboardController {
         return ResponseEntity.ok(summary);
     }
 
-    /**
-     * Endpoint thống kê số liệu bài viết của người dùng theo ngày/tháng.
-     */
+    // API thống kê số lượng bài viết theo thời gian
     @ApiOperation(value = "Thống kê số liệu bài viết của người dùng theo ngày/tháng")
     @GetMapping("/post-stats")
     public ResponseEntity<List<DashboardUserPostStatDTO>> getUserPostStatistics(

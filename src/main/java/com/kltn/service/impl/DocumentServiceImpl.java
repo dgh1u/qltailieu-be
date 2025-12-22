@@ -30,8 +30,10 @@ public class DocumentServiceImpl implements DocumentService {
     private final PostRepository postRepository;
 
     // Các định dạng file được phép
-    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList(".pdf", ".docx", ".ppt", ".pptx",".xlsx", ".zip" );
+    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList(".pdf", ".docx", ".ppt", ".pptx", ".xlsx",
+            ".zip");
 
+    // Upload tài liệu cho bài viết
     @Override
     public DocumentDto uploadDocument(Long idPost, MultipartFile file) {
         Optional<Post> post = postRepository.findById(idPost);
@@ -54,28 +56,7 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
-    @Override
-    public Document getDocument(String documentId) {
-        return documentRepository.findById(documentId)
-                .orElseThrow(() -> new DataNotFoundException("Không tìm thấy tài liệu có id " + documentId));
-    }
-
-    @Override
-    public List<String> getDocumentsByIdPost(Long idPost) {
-        List<String> uri = new ArrayList<>();
-        Optional<Post> post = postRepository.findById(idPost);
-        if (post.isPresent()) {
-            List<Document> documents = documentRepository.findDocumentByPost(post.get());
-            for (Document document : documents) {
-                uri.add(ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/api/document/")
-                        .path(document.getId())
-                        .toUriString());
-            }
-        }
-        return uri;
-    }
-
+    // Xóa một tài liệu theo ID
     @Override
     public void deleteSingleDocument(String documentId) {
         Optional<Document> document = documentRepository.findById(documentId);
@@ -86,6 +67,7 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
+    // Lấy danh sách tài liệu theo ID bài viết
     @Override
     public List<DocumentDto> getDocumentDTOsByIdPost(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
@@ -106,6 +88,7 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
+    // Lưu trữ tài liệu vào database
     private Document storeDocument(Long idPost, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
@@ -120,12 +103,15 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
+    // Kiểm tra định dạng file có hợp lệ hay không
     private boolean isValidFileType(String fileName) {
-        if (fileName == null) return false;
+        if (fileName == null)
+            return false;
         String lowerFileName = fileName.toLowerCase();
         return ALLOWED_EXTENSIONS.stream().anyMatch(lowerFileName::endsWith);
     }
 
+    // Lấy tài liệu để tải xuống theo ID
     @Override
     public Document getDocumentForDownload(String documentId) {
         return documentRepository.findById(documentId)

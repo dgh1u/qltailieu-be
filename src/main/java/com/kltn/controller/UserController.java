@@ -31,6 +31,7 @@ public class UserController {
 
     private final UserMapper userMapper;
 
+    // API lấy danh sách người dùng với phân trang và bộ lọc
     @ApiOperation(value = "Lấy thông tin nhiêu tài khoản")
     @GetMapping("")
     @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
@@ -42,13 +43,16 @@ public class UserController {
                 .collect(Collectors.toList()), (int) page.getTotalElements());
     }
 
-        @ApiOperation(value = "Lấy avatar của một tài khoản")
-        @GetMapping("/{id}/avatar")
-        //@PreAuthorize("#oauth2.hasAnyScope('read')") // for authenticated request (logged)
-        public ResponseEntity<?> getAvatar(@PathVariable("id") Long id) {
-            return ResponseEntity.ok(new AbstractMap.SimpleEntry<>("data", userService.selectUserById(id).getB64()));
-        }
+    // API lấy avatar người dùng theo ID
+    @ApiOperation(value = "Lấy avatar của một tài khoản")
+    @GetMapping("/{id}/avatar")
+    // @PreAuthorize("#oauth2.hasAnyScope('read')") // for authenticated request
+    // (logged)
+    public ResponseEntity<?> getAvatar(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(new AbstractMap.SimpleEntry<>("data", userService.selectUserById(id).getB64()));
+    }
 
+    // API lấy thông tin chi tiết người dùng theo ID
     @ApiOperation(value = "Lấy thông tin của một tài khoản")
     @GetMapping("/{id}")
 
@@ -56,6 +60,7 @@ public class UserController {
         return ResponseEntity.ok(userService.selectUserById(id));
     }
 
+    // API tạo mới người dùng
     @ApiOperation(value = "Tạo một người dùng")
     @PostMapping("")
     @PreAuthorize("hasAnyAuthority('ADMIN' , 'EMPLOYEE')")
@@ -63,6 +68,7 @@ public class UserController {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
+    // API cập nhật thông tin người dùng
     @ApiOperation(value = "Cập nhật một người dùng")
     @PutMapping("")
 
@@ -70,6 +76,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(request));
     }
 
+    // API xóa người dùng theo ID
     @ApiOperation(value = "Xóa một người dùng")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
@@ -78,6 +85,7 @@ public class UserController {
         return ResponseEntity.ok("Xóa người dùng thành công");
     }
 
+    // API xóa nhiều người dùng theo danh sách ID
     @ApiOperation(value = "Xóa nhiều người dùng")
     @DeleteMapping("/all")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
@@ -86,13 +94,15 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    // API upload avatar cho người dùng
     @ApiOperation(value = "Upload avatar một tài khoản")
     @PostMapping("/{id}/avatar")
-//    @PreAuthorize("#oauth2.hasAnyScope('read')") // for authenticated request (logged)
+    // @PreAuthorize("#oauth2.hasAnyScope('read')") // for authenticated request
+    // (logged)
     public ResponseEntity<?> uploadAvatar(@PathVariable("id") Long id,
-                                          @RequestParam("avatar") MultipartFile file) throws IOException {
-//        String token = header.substring(7);
-//        String email = jwtConfig.getUserIdFromJWT(token);
+            @RequestParam("avatar") MultipartFile file) throws IOException {
+        // String token = header.substring(7);
+        // String email = jwtConfig.getUserIdFromJWT(token);
 
         UserDto userDto = userService.selectUserById(id);
 

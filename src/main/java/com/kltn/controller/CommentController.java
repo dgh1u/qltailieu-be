@@ -29,34 +29,39 @@ public class CommentController {
     private final CommentService commentService;
     private final CommentMapper commentMapper;
 
+    // API lấy danh sách bình luận với phân trang và bộ lọc
     @ApiOperation(value = "Lấy các bình luận của một post")
     @GetMapping("/comments")
     public ResponseEntity<?> getAllComment(@Valid @ModelAttribute GetCommentRequest request) {
-        Page<Comment> page = commentService.getAllComment(request, PageRequest.of(request.getStart(), request.getLimit()));
+        Page<Comment> page = commentService.getAllComment(request,
+                PageRequest.of(request.getStart(), request.getLimit()));
 
         return BaseResponse.successListData(page.getContent().stream()
                 .map(commentMapper::toCommentDTO)
                 .collect(Collectors.toList()), (int) page.getTotalElements());
     }
 
+    // API tạo bình luận mới cho bài viết
     @ApiOperation(value = "Đăng một bình luận mới")
     @PostMapping("/comment")
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest request,
-                                           @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         String email = jwtConfig.getUserIdFromJWT(jwt);
         return ResponseEntity.ok(commentService.createComment(request, email));
     }
 
+    // API cập nhật nội dung bình luận
     @ApiOperation(value = "Chỉnh sửa một bình luận")
     @PutMapping("/comment")
     public ResponseEntity<?> updateComment(@Valid @RequestBody UpdateCommentRequest request,
-                                           @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         String email = jwtConfig.getUserIdFromJWT(jwt);
         return ResponseEntity.ok(commentService.updateComment(request, email));
     }
 
+    // API xóa bình luận theo ID
     @ApiOperation(value = "Xóa một bình luận")
     @DeleteMapping("/comment/{id}")
 

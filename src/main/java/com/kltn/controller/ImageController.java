@@ -24,18 +24,21 @@ public class ImageController {
     @Autowired
     private ImageServiceImp imageService;
 
+    // API upload một hình ảnh cho bài viết
     @ApiOperation(value = "Upload 1 hình ảnh cho một tin đăng")
     @PostMapping("/uploadImage/post/{idPost}")
     public ImageDto uploadFile(@PathVariable Long idPost, @RequestParam("file") MultipartFile file) {
         return imageService.uploadFile(idPost, file);
     }
 
+    // API xóa tất cả hình ảnh của bài viết
     @ApiOperation(value = "Delete hình ảnh một tin đăng")
     @DeleteMapping("/deleteImage/post/{idPost}")
     public void deleteFile(@PathVariable Long idPost) {
         imageService.deleteAllImages(idPost);
     }
 
+    // API upload nhiều hình ảnh cho bài viết
     @ApiOperation(value = "Upload nhiều hình ảnh cho một tin đăng")
     @PostMapping("/uploadMultipleFiles/post/{idPost}")
 
@@ -46,12 +49,14 @@ public class ImageController {
                 .collect(Collectors.toList());
     }
 
+    // API lấy danh sách hình ảnh dạng byte cho chỉnh sửa bài viết
     @ApiOperation(value = "Lấy danh sách hình ảnh của một tin đăng khi chỉnh sửa tin đăng")
     @GetMapping("/imageByte/post/{idPost}")
     public List<ImageDto> getImageDTOByIdPost(@PathVariable Long idPost) {
         return imageService.getImageDTOByIdPost(idPost);
     }
 
+    // API render hình ảnh từ database thành resource
     @ApiOperation(value = "Render 1 ảnh thành link")
     @GetMapping("/image/{fileId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) {
@@ -62,6 +67,8 @@ public class ImageController {
                 .contentType(MediaType.parseMediaType(image.getFileType()))
                 .body(new ByteArrayResource(image.getData()));
     }
+
+    // API lấy danh sách link hình ảnh của bài viết
     @ApiOperation(value = "Lấy danh sách hình ảnh của một tin đăng khi xem chi tiết tin đăng")
     @GetMapping("/image/post/{idPost}")
     public List<String> getImageByIdPost(@PathVariable Long idPost) {

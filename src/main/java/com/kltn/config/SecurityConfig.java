@@ -27,7 +27,15 @@ import java.util.Arrays;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO) //Thêm cái này để PageAble do Spring ko trực tiếp hỗ trợ
+@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO) // Thêm
+                                                                                                              // cái này
+                                                                                                              // để
+                                                                                                              // PageAble
+                                                                                                              // do
+                                                                                                              // Spring
+                                                                                                              // ko trực
+                                                                                                              // tiếp hỗ
+                                                                                                              // trợ
 public class SecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
     private final UserDetailsService myUserDetailsService;
@@ -37,7 +45,8 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://127.0.0.1:5500","http://localhost:5174"));
+        config.setAllowedOrigins(
+                Arrays.asList("http://localhost:5173", "http://127.0.0.1:5500", "http://localhost:5174"));
         config.addAllowedHeader("*");
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -53,7 +62,6 @@ public class SecurityConfig {
         return authProvider;
     }
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors((cors) -> cors.configurationSource(corsConfigurationSource()));
@@ -64,13 +72,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.GET, "/api/image/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/api/payment/**").permitAll()
                 .requestMatchers("/api/posts").permitAll()
                 .requestMatchers("/api/post/{id}").permitAll()
                 .requestMatchers("/api/comments").permitAll()
-                .requestMatchers(HttpMethod.GET,"/auth/profile").permitAll()
-                .anyRequest().authenticated()
-        );
+                .requestMatchers(HttpMethod.GET, "/auth/profile").permitAll()
+                .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
