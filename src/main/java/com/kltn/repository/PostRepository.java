@@ -17,12 +17,14 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
 
     Optional<Post> findPostById(Long id);
 
-    Page<Post> findAllByApprovedAndNotApprovedAndDel(boolean approved, boolean notApproved, boolean del, Pageable pageable);
+    Page<Post> findAllByApprovedAndNotApprovedAndDel(boolean approved, boolean notApproved, boolean del,
+            Pageable pageable);
 
     Page<Post> findAllByApprovedAndNotApproved(boolean approved, boolean notApproved, Pageable pageable);
 
     Page<Post> findAllByUser_EmailAndDelAndApproved(String email, boolean del, boolean approved, Pageable page);
-    // Phương thức truy vấn các bài đăng chưa duyệt
+
+    // Phương thức truy vấn các tài liệu chưa duyệt
     Page<Post> findByApprovedFalseAndNotApprovedFalse(Pageable pageable);
-    // Phương thức tìm bài đăng nhà nguyên căn với các điều kiện lọc
+    // Phương thức tìm tài liệu nhà nguyên căn với các điều kiện lọc
 }

@@ -23,8 +23,8 @@ public class DocumentController {
 
     private final DocumentService documentService;
 
-    // API upload tài liệu cho bài viết
-    @ApiOperation(value = "Upload tài liệu cho bài đăng")
+    // API upload tài liệu cho tài liệu
+    @ApiOperation(value = "Upload tài liệu cho tài liệu")
     @PostMapping("/document/upload/{postId}")
     public ResponseEntity<?> uploadDocument(@PathVariable Long postId,
             @RequestParam("file") MultipartFile file) {
@@ -57,8 +57,8 @@ public class DocumentController {
         }
     }
 
-    // API lấy danh sách tài liệu của bài viết
-    @ApiOperation(value = "Lấy danh sách tài liệu của bài đăng")
+    // API lấy danh sách tài liệu của tài liệu
+    @ApiOperation(value = "Lấy danh sách tài liệu của tài liệu")
     @GetMapping("/documents/{postId}")
     public ResponseEntity<?> getDocumentsByPost(@PathVariable Long postId) {
         try {

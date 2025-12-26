@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApprovePostResponse {
-    private Long postId;       // ID của bài đăng
-    private String message;    // Nội dung thông báo
+    private Long postId; // ID của tài liệu
+    private String message; // Nội dung thông báo
     private boolean approved;
 }

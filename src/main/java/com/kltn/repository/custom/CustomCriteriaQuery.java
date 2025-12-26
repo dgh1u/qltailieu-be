@@ -14,7 +14,8 @@ import java.util.List;
 
 public class CustomCriteriaQuery {
 
-    private CustomCriteriaQuery() {}
+    private CustomCriteriaQuery() {
+    }
 
     @Data
     @NoArgsConstructor
@@ -32,7 +33,7 @@ public class CustomCriteriaQuery {
             List<Predicate> predicates = new ArrayList<>();
             Join<Criteria, Post> postJoin = root.join("post", JoinType.LEFT);
 
-            // Lọc theo tiêu đề bài đăng
+            // Lọc theo tiêu đề tài liệu
             if (param.getKeywords() != null) {
                 predicates.add(CriteriaBuilderUtil.createPredicateForSearchInsensitive(
                         postJoin, criteriaBuilder, param.getKeywords(), "title"));

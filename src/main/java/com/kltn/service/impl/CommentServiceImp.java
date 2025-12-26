@@ -45,7 +45,7 @@ public class CommentServiceImp implements CommentService {
         return commentRepository.findAll(specification, pageRequest);
     }
 
-    // Tạo comment mới cho bài viết
+    // Tạo comment mới cho tài liệu
     @Override
     public CommentDto createComment(CreateCommentRequest request, String email) {
         Optional<Post> postOpt = postRepository.findById(request.getIdPost());

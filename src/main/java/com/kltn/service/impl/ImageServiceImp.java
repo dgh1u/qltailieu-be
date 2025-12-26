@@ -29,10 +29,10 @@ public class ImageServiceImp implements ImageService {
 
     private final PostRepository postRepository;
 
-    // Upload file ảnh cho bài viết
+    // Upload file ảnh cho tài liệu
     @Override
     public ImageDto uploadFile(Long idPost, MultipartFile file) {
-        // Kiểm tra bài đăng có tồn tại không
+        // Kiểm tra tài liệu có tồn tại không
         Optional<Post> post = postRepository.findById(idPost);
         if (post.isPresent()) {
             // Lưu ảnh vào database
@@ -58,7 +58,7 @@ public class ImageServiceImp implements ImageService {
             if (fileName.contains("..")) {
                 throw new DataNotFoundException("I can't found file name in " + fileName);
             }
-            // Tìm bài đăng
+            // Tìm tài liệu
             Optional<Post> post = postRepository.findById(idPost);
 
             // Tạo đối tượng Image và lưu
@@ -76,14 +76,14 @@ public class ImageServiceImp implements ImageService {
                 .orElseThrow(() -> new DataNotFoundException("Không tim thấy ảnh có id " + imageId));
     }
 
-    // Lấy danh sách link ảnh theo ID bài viết
+    // Lấy danh sách link ảnh theo ID tài liệu
     @Override
     public List<String> getImageByIdPost(Long idPost) {
         // Tạo danh sách để chứa link ảnh
         List<String> uri = new ArrayList<>();
-        // Tìm bài đăng
+        // Tìm tài liệu
         Optional<Post> post = postRepository.findById(idPost);
-        // Tìm tất cả ảnh của bài đăng này
+        // Tìm tất cả ảnh của tài liệu này
         List<Image> images = imageRepository.findImageByPost(post.get());
         for (Image image : images) {
             uri.add(ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -94,7 +94,7 @@ public class ImageServiceImp implements ImageService {
         return uri;
     }
 
-    // Xóa tất cả ảnh của bài viết
+    // Xóa tất cả ảnh của tài liệu
     @Override
     public void deleteAllImages(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
@@ -106,7 +106,7 @@ public class ImageServiceImp implements ImageService {
         }
     }
 
-    // Lấy danh sách ảnh dạng DTO (base64) theo ID bài viết
+    // Lấy danh sách ảnh dạng DTO (base64) theo ID tài liệu
     @Override
     public List<ImageDto> getImageDTOByIdPost(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);

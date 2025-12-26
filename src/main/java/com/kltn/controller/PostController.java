@@ -47,8 +47,8 @@ public class PostController {
         return "Hello World";
     }
 
-    // API lấy danh sách tất cả bài viết với phân trang và bộ lọc
-    @ApiOperation(value = "Lấy tất cả tin đăng")
+    // API lấy danh sách tất cả tài liệu với phân trang và bộ lọc
+    @ApiOperation(value = "Lấy tất cả tài liệu")
     @GetMapping("/posts")
     public ResponseEntity<?> getAllPost(@Valid @ModelAttribute GetPostRequest request) {
         Page<Post> page = postService.getAllPost(request, PageRequest.of(request.getStart(), request.getLimit()));
@@ -57,8 +57,8 @@ public class PostController {
                 (int) page.getTotalElements());
     }
 
-    // API lấy chi tiết bài viết theo ID
-    @ApiOperation(value = "Lấy thông tin của một tin đăng")
+    // API lấy chi tiết tài liệu theo ID
+    @ApiOperation(value = "Lấy thông tin của một tài liệu")
     @GetMapping("/post/{id}")
     public ResponseEntity<?> getPostById(@PathVariable Long id) {
         try {
@@ -69,7 +69,7 @@ public class PostController {
         }
     }
 
-    // API tạo bài viết mới
+    // API tạo tài liệu mới
     @ApiOperation(value = "Đăng tin mới")
     @PostMapping("/post")
     public ResponseEntity<?> createPost(@RequestHeader("Authorization") String token,
@@ -88,8 +88,8 @@ public class PostController {
         }
     }
 
-    // API duyệt hoặc khóa bài viết
-    @ApiOperation(value = "Duyệt/Khóa tin đăng")
+    // API duyệt hoặc khóa tài liệu
+    @ApiOperation(value = "Duyệt/Khóa tài liệu")
     @PutMapping("/post/{id}/approve/{bool}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> approvePostAndLogging(@RequestHeader("Authorization") String token,
@@ -106,8 +106,8 @@ public class PostController {
         }
     }
 
-    // API cập nhật thông tin bài viết
-    @ApiOperation(value = "Cập nhật một tin đăng")
+    // API cập nhật thông tin tài liệu
+    @ApiOperation(value = "Cập nhật một tài liệu")
     @PutMapping("/post/{id}")
     public ResponseEntity<?> updatePost(@RequestHeader("Authorization") String token, @PathVariable Long id,
             @RequestBody UpdatePostRequest updatePostRequest) {
@@ -120,23 +120,23 @@ public class PostController {
         }
     }
 
-    // API ẩn hoặc hiển thị bài viết
-    @ApiOperation(value = "Ẩn/Mở khóa một tin đăng")
+    // API ẩn hoặc hiển thị tài liệu
+    @ApiOperation(value = "Ẩn/Mở khóa một tài liệu")
     @PutMapping("/post/hide/{id}")
     public ResponseEntity<?> hidePost(@PathVariable Long id) {
         return BaseResponse.successData(postService.hidePost(id));
     }
 
-    // API xóa bài viết bởi Admin
-    @ApiOperation(value = "Xóa một tin đăng")
+    // API xóa tài liệu bởi Admin
+    @ApiOperation(value = "Xóa một tài liệu")
     @DeleteMapping("/post/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> deletePostByAdmin(@PathVariable Long id) {
         return BaseResponse.successData(postService.deletePostByAdmin(id));
     }
 
-    // API lấy danh sách bài viết theo người dùng
-    @ApiOperation(value = "Lấy danh sách tin đăng của một người dùng")
+    // API lấy danh sách tài liệu theo người dùng
+    @ApiOperation(value = "Lấy danh sách tài liệu của một người dùng")
     @GetMapping("/posts/{idUser}")
     public ResponseEntity<?> getPostsByUser(@PathVariable Long idUser, @Valid @ModelAttribute GetPostRequest request) {
         // Gán idUser vào bộ lọc (đảm bảo GetPostRequest có trường userId hoặc chuyển

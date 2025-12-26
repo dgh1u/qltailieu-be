@@ -62,35 +62,35 @@ public class PostServiceImp implements PostService {
 
     private final CommentMapper commentMapper;
 
-    // Lấy danh sách tất cả bài viết theo bộ lọc và phân trang
+    // Lấy danh sách tất cả tài liệu theo bộ lọc và phân trang
     @Override
     public Page<Post> getAllPost(CustomPostQuery.PostFilterParam param, PageRequest pageRequest) {
         try {
             Specification<Post> specification = CustomPostQuery.getFilterPost(param);
             return postRepository.findAll(specification, pageRequest);
         } catch (Exception e) {
-            throw new DataNotFoundException("Không có bài viết nào được tìm thấy! " + e.getMessage());
+            throw new DataNotFoundException("Không có tài liệu nào được tìm thấy! " + e.getMessage());
         }
     }
 
-    // Lấy chi tiết bài viết theo ID kèm theo comments, images, documents
+    // Lấy chi tiết tài liệu theo ID kèm theo comments, images, documents
     @Override
     public PostDto getPostById(Long id) {
-        // Tìm bài viết
+        // Tìm tài liệu
         Optional<Post> post = postRepository.findPostById(id);
 
-        // Kiểm tra xem bài viết có tồn tại không
+        // Kiểm tra xem tài liệu có tồn tại không
         if (post.isPresent()) {
             PostDto postDto = postMapper.toPostDto(post.get());
             // Lay cho o ra
             CriteriaDto criteriaDto = criteriaMapper.toCriteriaDto(post.get().getCriteria());
-            // Lấy các bình luận của bài đăng
+            // Lấy các bình luận của tài liệu
             List<CommentDto> commentDtos = new ArrayList<>();
             List<Comment> comments = commentRepository.findCommentsByPostId(id);
             for (Comment comment : comments) {
                 commentDtos.add(commentMapper.toCommentDTO(comment));
             }
-            // Lấy hình ảnh của bài đăng
+            // Lấy hình ảnh của tài liệu
             List<String> images = imageServiceImp.getImageByIdPost(id);
 
             List<DocumentDto> documents = documentServiceImpl.getDocumentDTOsByIdPost(id);
@@ -102,15 +102,15 @@ public class PostServiceImp implements PostService {
             postDto.setCommentDTOS(commentDtos);
             postDto.setUserDTO(userMapper.toUserDto(post.get().getUser()));
 
-            // Trả về thông tin bài viết
+            // Trả về thông tin tài liệu
             return postDto;
         } else {
-            // Nếu không tìm thấy bài viết
-            throw new DataNotFoundException("Không tìm thấy bài viết theo id đã cho");
+            // Nếu không tìm thấy tài liệu
+            throw new DataNotFoundException("Không tìm thấy tài liệu theo id đã cho");
         }
     }
 
-    // Tạo bài viết mới và lưu vào database
+    // Tạo tài liệu mới và lưu vào database
     @Override
     @Transactional
     public CreatePostResponse createPost(CreatePostRequest createPostRequest, String email) {
@@ -123,7 +123,7 @@ public class PostServiceImp implements PostService {
 
             userRepository.save(user);
 
-            // Tạo bài đăng mới
+            // Tạo tài liệu mới
             Post post = postMapper.createRequestDtoToPost(createPostRequest);
             post.setCreateAt(LocalDateTime.now());
             post.setLastUpdate(LocalDateTime.now());
@@ -132,17 +132,17 @@ public class PostServiceImp implements PostService {
             post.setApproved(true);
             post.setNotApproved(true);
 
-            // Xử lý đối tượng Criteria liên quan đến bài đăng
+            // Xử lý đối tượng Criteria liên quan đến tài liệu
             Criteria criteria = criteriaMapper.toCriteria(createPostRequest.getCriteria());
             criteria.setId(null);
             criteria.setPost(post);
             Criteria criteriaSaved = criteriaRepository.save(criteria);
             post.setCriteria(criteriaSaved);
 
-            // Lưu bài đăng vào database
+            // Lưu tài liệu vào database
             Post postSaved = postRepository.save(post);
 
-            // Tạo action cho bài đăng
+            // Tạo action cho tài liệu
             actionService.createAction(post, user, ActionName.CREATE);
 
             return postMapper.toCreatePostResponse(postSaved);
@@ -154,14 +154,14 @@ public class PostServiceImp implements PostService {
         }
     }
 
-    // Cập nhật thông tin bài viết và criteria
+    // Cập nhật thông tin tài liệu và criteria
     @Override
     @Transactional
     public UpdatePostResponse updatePost(Long id, UpdatePostRequest updatePostRequest, String userId) {
         try {
-            // Kiểm tra xem bài đăng có tồn tại không
+            // Kiểm tra xem tài liệu có tồn tại không
             Post post = postRepository.findPostById(id)
-                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy bài đăng với ID: " + id));
+                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy tài liệu với ID: " + id));
 
             // Cập nhật thông tin Criteria
             Criteria criteria = criteriaMapper.toCriteria(updatePostRequest.getCriteria());
@@ -183,18 +183,18 @@ public class PostServiceImp implements PostService {
 
             return postMapper.toUpdatePostResponse(post);
         } catch (Exception e) {
-            log.error("Lỗi khi cập nhật bài đăng: {}", e.getMessage());
-            throw new RuntimeException("Lỗi trong quá trình cập nhật bài đăng: " + e.getMessage());
+            log.error("Lỗi khi cập nhật tài liệu: {}", e.getMessage());
+            throw new RuntimeException("Lỗi trong quá trình cập nhật tài liệu: " + e.getMessage());
         }
     }
 
-    // Ẩn hoặc hiện bài viết
+    // Ẩn hoặc hiện tài liệu
     @Override
     public HiddenPostResponse hidePost(Long id) {
         try {
-            // Tìm bài đăng, nếu không có thì ném DataNotFoundException
+            // Tìm tài liệu, nếu không có thì ném DataNotFoundException
             Post post = postRepository.findById(id)
-                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy bài đăng với ID " + id));
+                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy tài liệu với ID " + id));
 
             // Chuyển đổi trạng thái của thuộc tính del (nếu false -> true, nếu true ->
             // false)
@@ -202,47 +202,47 @@ public class PostServiceImp implements PostService {
             postRepository.save(post);
 
             // Tạo thông báo phù hợp dựa trên trạng thái mới của del
-            String statusMessage = post.getDel() ? "Bài đăng đã được ẩn thành công."
-                    : "Bài đăng đã được hiển thị thành công.";
+            String statusMessage = post.getDel() ? "tài liệu đã được ẩn thành công."
+                    : "tài liệu đã được hiển thị thành công.";
             return new HiddenPostResponse(post.getId(), statusMessage, post.getDel());
         } catch (DataNotFoundException e) {
-            log.warn("Không tìm thấy bài đăng với ID: {}", id);
+            log.warn("Không tìm thấy tài liệu với ID: {}", id);
             throw e; // Ném lỗi tiếp để controller xử lý
         } catch (Exception e) {
-            log.error("Lỗi khi ẩn/bật bài đăng ID {}: {}", id, e.getMessage(), e);
-            throw new RuntimeException("Đã xảy ra lỗi khi ẩn/bật bài đăng.");
+            log.error("Lỗi khi ẩn/bật tài liệu ID {}: {}", id, e.getMessage(), e);
+            throw new RuntimeException("Đã xảy ra lỗi khi ẩn/bật tài liệu.");
         }
     }
 
-    // Xóa bài viết bởi Admin
+    // Xóa tài liệu bởi Admin
     @Override
     public DeletePostResponse deletePostByAdmin(Long id) {
         try {
-            // Tìm bài đăng, nếu không có thì ném DataNotFoundException
+            // Tìm tài liệu, nếu không có thì ném DataNotFoundException
             Post post = postRepository.findById(id)
-                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy bài đăng với ID " + id));
+                    .orElseThrow(() -> new DataNotFoundException("Không tìm thấy tài liệu với ID " + id));
 
-            // Xóa bài đăng
+            // Xóa tài liệu
             postRepository.delete(post);
 
             // Trả về response
-            return new DeletePostResponse(id, "Bài đăng đã bị xóa bởi Admin.", true);
+            return new DeletePostResponse(id, "tài liệu đã bị xóa bởi Admin.", true);
         } catch (DataNotFoundException e) {
-            log.warn("Không tìm thấy bài đăng với ID: {}", id);
+            log.warn("Không tìm thấy tài liệu với ID: {}", id);
             throw e; // Ném lỗi để controller xử lý
         } catch (Exception e) {
-            log.error("Lỗi khi Admin xóa bài đăng ID {}: {}", id, e.getMessage(), e);
-            throw new RuntimeException("Đã xảy ra lỗi khi xóa bài đăng.");
+            log.error("Lỗi khi Admin xóa tài liệu ID {}: {}", id, e.getMessage(), e);
+            throw new RuntimeException("Đã xảy ra lỗi khi xóa tài liệu.");
         }
     }
 
-    // Duyệt hoặc khóa bài viết
+    // Duyệt hoặc khóa tài liệu
     @Override
     public ApprovePostResponse ApprovePost(Long idPost, String usernameApprove, boolean isApprove) {
         try {
             Optional<Post> postOpt = postRepository.findById(idPost);
             if (postOpt.isEmpty()) {
-                return new ApprovePostResponse(idPost, "Không tìm thấy bài đăng", false);
+                return new ApprovePostResponse(idPost, "Không tìm thấy tài liệu", false);
             }
 
             Optional<User> userOpt = userRepository.findByEmail(usernameApprove);
@@ -253,16 +253,16 @@ public class PostServiceImp implements PostService {
 
             Post post = postOpt.get();
             User user = userOpt.get();
-            User postOwner = post.getUser(); // Chủ bài viết
+            User postOwner = post.getUser(); // Chủ tài liệu
 
             if (isApprove) {
-                // Duyệt bài viết
+                // Duyệt tài liệu
                 post.setApproved(true);
                 post.setNotApproved(false);
                 actionService.createAction(post, user, ActionName.APPROVE);
             } else {
-                // Khóa bài viết
-                // Kiểm tra trạng thái hiện tại của bài viết
+                // Khóa tài liệu
+                // Kiểm tra trạng thái hiện tại của tài liệu
                 boolean wasWaitingApproval = post.getApproved() && post.getNotApproved(); // Chờ duyệt
                 boolean wasApproved = post.getApproved() && !post.getNotApproved(); // Đã duyệt
 
@@ -270,18 +270,17 @@ public class PostServiceImp implements PostService {
                 post.setApproved(false);
                 post.setNotApproved(true);
 
-
                 actionService.createAction(post, user, ActionName.BLOCK);
             }
 
             postRepository.save(post);
 
-            String message = "Bài đăng đã được " + (isApprove ? "duyệt" : "khóa") + " thành công";
+            String message = "tài liệu đã được " + (isApprove ? "duyệt" : "khóa") + " thành công";
 
             return new ApprovePostResponse(idPost, message, isApprove);
 
         } catch (Exception e) {
-            log.error("Lỗi khi duyệt bài đăng: {}", e.getMessage());
+            log.error("Lỗi khi duyệt tài liệu: {}", e.getMessage());
             return new ApprovePostResponse(idPost, "Đã xảy ra lỗi trong quá trình xử lý", false);
         }
     }

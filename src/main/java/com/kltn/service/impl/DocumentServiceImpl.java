@@ -33,7 +33,7 @@ public class DocumentServiceImpl implements DocumentService {
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList(".pdf", ".docx", ".ppt", ".pptx", ".xlsx",
             ".zip");
 
-    // Upload tài liệu cho bài viết
+    // Upload tài liệu cho tài liệu
     @Override
     public DocumentDto uploadDocument(Long idPost, MultipartFile file) {
         Optional<Post> post = postRepository.findById(idPost);
@@ -52,7 +52,7 @@ public class DocumentServiceImpl implements DocumentService {
             return new DocumentDto(document.getId(), document.getFileName(),
                     file.getContentType(), fileDownloadUri, idPost);
         } else {
-            throw new DataNotFoundException("Không tìm thấy bài đăng có ID " + idPost);
+            throw new DataNotFoundException("Không tìm thấy tài liệu có ID " + idPost);
         }
     }
 
@@ -67,7 +67,7 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
-    // Lấy danh sách tài liệu theo ID bài viết
+    // Lấy danh sách tài liệu theo ID tài liệu
     @Override
     public List<DocumentDto> getDocumentDTOsByIdPost(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
@@ -84,7 +84,7 @@ public class DocumentServiceImpl implements DocumentService {
             }
             return documentDtos;
         } else {
-            throw new DataNotFoundException("Không tìm thấy bài đăng có ID " + idPost);
+            throw new DataNotFoundException("Không tìm thấy tài liệu có ID " + idPost);
         }
     }
 

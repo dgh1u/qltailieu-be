@@ -41,7 +41,7 @@ public class CommentController {
                 .collect(Collectors.toList()), (int) page.getTotalElements());
     }
 
-    // API tạo bình luận mới cho bài viết
+    // API tạo bình luận mới cho tài liệu
     @ApiOperation(value = "Đăng một bình luận mới")
     @PostMapping("/comment")
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest request,

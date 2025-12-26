@@ -21,7 +21,7 @@ public interface DashboardService {
     DashboardSummaryDTO getDashboardSummary();
 
     /**
-     * Lấy thống kê số lượng người dùng và bài viết theo đơn vị: day, month hoặc
+     * Lấy thống kê số lượng người dùng và tài liệu theo đơn vị: day, month hoặc
      * year.
      * Tham số start và end có định dạng chuỗi (ví dụ: yyyy-MM-dd) để lọc theo thời
      * gian.

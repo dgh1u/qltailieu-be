@@ -42,7 +42,7 @@ public class DashboardServiceImp implements DashboardService {
         return new ArrayList<>();
     }
 
-    // Lấy tổng quan thống kê dashboard (tổng số người dùng và bài viết)
+    // Lấy tổng quan thống kê dashboard (tổng số người dùng và tài liệu)
     @Override
     public DashboardSummaryDTO getDashboardSummary() {
         long totalUsers = userRepository.count();
@@ -51,7 +51,7 @@ public class DashboardServiceImp implements DashboardService {
         return new DashboardSummaryDTO(totalUsers, totalPosts);
     }
 
-    // Lấy thống kê số lượng bài viết theo thời gian (ngày/tháng/năm)
+    // Lấy thống kê số lượng tài liệu theo thời gian (ngày/tháng/năm)
     @Override
     public List<DashboardUserPostStatDTO> getUserPostStatistics(String start, String end, String groupBy) {
         // Specification cho Post

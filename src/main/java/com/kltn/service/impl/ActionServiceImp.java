@@ -23,7 +23,7 @@ public class ActionServiceImp implements ActionService {
 
     private final ActionRepository actionRepository;
 
-    // Tạo hoạt động mới cho bài viết
+    // Tạo hoạt động mới cho tài liệu
     @Override
     public void createAction(Post post, User user, ActionName actionName) {
         try {
@@ -42,7 +42,7 @@ public class ActionServiceImp implements ActionService {
             Specification<Action> specification = CustomActionQuery.getFilterAction(param);
             return actionRepository.findAll(specification, pageRequest);
         } catch (Exception e) {
-            throw new DataNotFoundException("Không có bài viết nào được tìm thấy! " + e.getMessage());
+            throw new DataNotFoundException("Không có tài liệu nào được tìm thấy! " + e.getMessage());
         }
     }
 

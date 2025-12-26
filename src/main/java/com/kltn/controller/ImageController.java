@@ -24,22 +24,22 @@ public class ImageController {
     @Autowired
     private ImageServiceImp imageService;
 
-    // API upload một hình ảnh cho bài viết
-    @ApiOperation(value = "Upload 1 hình ảnh cho một tin đăng")
+    // API upload một hình ảnh cho tài liệu
+    @ApiOperation(value = "Upload 1 hình ảnh cho một tài liệu")
     @PostMapping("/uploadImage/post/{idPost}")
     public ImageDto uploadFile(@PathVariable Long idPost, @RequestParam("file") MultipartFile file) {
         return imageService.uploadFile(idPost, file);
     }
 
-    // API xóa tất cả hình ảnh của bài viết
-    @ApiOperation(value = "Delete hình ảnh một tin đăng")
+    // API xóa tất cả hình ảnh của tài liệu
+    @ApiOperation(value = "Delete hình ảnh một tài liệu")
     @DeleteMapping("/deleteImage/post/{idPost}")
     public void deleteFile(@PathVariable Long idPost) {
         imageService.deleteAllImages(idPost);
     }
 
-    // API upload nhiều hình ảnh cho bài viết
-    @ApiOperation(value = "Upload nhiều hình ảnh cho một tin đăng")
+    // API upload nhiều hình ảnh cho tài liệu
+    @ApiOperation(value = "Upload nhiều hình ảnh cho một tài liệu")
     @PostMapping("/uploadMultipleFiles/post/{idPost}")
 
     public List<ImageDto> uploadMultipleFiles(@PathVariable Long idPost, @RequestParam("files") MultipartFile[] files) {
@@ -49,8 +49,8 @@ public class ImageController {
                 .collect(Collectors.toList());
     }
 
-    // API lấy danh sách hình ảnh dạng byte cho chỉnh sửa bài viết
-    @ApiOperation(value = "Lấy danh sách hình ảnh của một tin đăng khi chỉnh sửa tin đăng")
+    // API lấy danh sách hình ảnh dạng byte cho chỉnh sửa tài liệu
+    @ApiOperation(value = "Lấy danh sách hình ảnh của một tài liệu khi chỉnh sửa tài liệu")
     @GetMapping("/imageByte/post/{idPost}")
     public List<ImageDto> getImageDTOByIdPost(@PathVariable Long idPost) {
         return imageService.getImageDTOByIdPost(idPost);
@@ -68,8 +68,8 @@ public class ImageController {
                 .body(new ByteArrayResource(image.getData()));
     }
 
-    // API lấy danh sách link hình ảnh của bài viết
-    @ApiOperation(value = "Lấy danh sách hình ảnh của một tin đăng khi xem chi tiết tin đăng")
+    // API lấy danh sách link hình ảnh của tài liệu
+    @ApiOperation(value = "Lấy danh sách hình ảnh của một tài liệu khi xem chi tiết tài liệu")
     @GetMapping("/image/post/{idPost}")
     public List<String> getImageByIdPost(@PathVariable Long idPost) {
         return imageService.getImageByIdPost(idPost);

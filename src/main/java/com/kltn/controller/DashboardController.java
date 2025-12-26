@@ -38,8 +38,8 @@ public class DashboardController {
         return ResponseEntity.ok(summary);
     }
 
-    // API thống kê số lượng bài viết theo thời gian
-    @ApiOperation(value = "Thống kê số liệu bài viết của người dùng theo ngày/tháng")
+    // API thống kê số lượng tài liệu theo thời gian
+    @ApiOperation(value = "Thống kê số liệu tài liệu của người dùng theo ngày/tháng")
     @GetMapping("/post-stats")
     public ResponseEntity<List<DashboardUserPostStatDTO>> getUserPostStatistics(
             @RequestParam(required = false) String start,

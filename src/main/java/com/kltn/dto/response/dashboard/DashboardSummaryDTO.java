@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class DashboardSummaryDTO {
     // Tổng số người dùng
     private long totalUsers;
-    // Tổng số bài viết
+    // Tổng số tài liệu
     private long totalPosts;
 }
