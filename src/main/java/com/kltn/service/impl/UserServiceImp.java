@@ -104,12 +104,32 @@ public class UserServiceImp implements UserService {
         }
 
         try {
-            User user = userMapper.toUpdateUser(request);
-            user.setRole(buildRole(request.getRoleId()));
-            user.setPassword(userOptional.get().getPassword());
-            return userMapper.toUserDto(userRepository.saveAndFlush(user));
+            User existingUser = userOptional.get();
+
+            // Cập nhật các trường từ request
+            existingUser.setEmail(request.getEmail());
+            existingUser.setFullName(request.getFullName());
+            existingUser.setAddress(request.getAddress());
+            existingUser.setPhone(request.getPhone());
+            existingUser.setBlock(request.isBlock());
+
+            // Chỉ cập nhật role nếu roleId không null
+            if (request.getRoleId() != null && !request.getRoleId().isEmpty()) {
+                existingUser.setRole(buildRole(request.getRoleId()));
+            }
+
+            // Cập nhật b64 và fileType nếu có
+            if (request.getB64() != null) {
+                existingUser.setB64(request.getB64());
+            }
+            if (request.getFileType() != null) {
+                existingUser.setFileType(request.getFileType());
+            }
+
+            return userMapper.toUserDto(userRepository.saveAndFlush(existingUser));
         } catch (Exception e) {
-            throw new MyCustomException("Có lỗi xảy ra trong quá trình cập nhât người dùng");
+            e.printStackTrace(); // Log lỗi chi tiết để debug
+            throw new MyCustomException("Có lỗi xảy ra trong quá trình cập nhật người dùng: " + e.getMessage());
         }
     }
 
